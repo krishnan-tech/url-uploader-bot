@@ -25,14 +25,22 @@ def start(update: Update, context: CallbackContext) -> None:
 	update.message.reply_text(text)
 
 def main_function(update: Update, context: CallbackContext) -> None:
-	update.message.reply_text(update.message.text)
+
+	# if input is photo
+	if len(update.message.photo) > 0:
+		if not os.path.exists("photos"):
+			os.makedirs("photos")
+		file_unique_id = (update.message.photo[-1]['file_unique_id'])
+		update.message.photo[-1].get_file().download(f"photos/{file_unique_id}.jpg")
+		print(f"Photo with unique id {file_unique_id} is downloaded")
+
 
 def main() -> None:
     updater = Updater(TOKEN)
 
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, main_function))
+    dispatcher.add_handler(MessageHandler(None, main_function))
 
     updater.start_polling()
     updater.idle()
