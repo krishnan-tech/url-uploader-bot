@@ -19,8 +19,9 @@ TOKEN = os.getenv("TOKEN")
 logger = logging.getLogger(__name__)
 
 def clear_uploads(dir):
-    for file in os.listdir(dir):
-        os.remove(os.path.join(dir, file))
+    if os.path.exists(dir):
+        for file in os.listdir(dir):
+            os.remove(os.path.join(dir, file))
 
 def start(update: Update, context: CallbackContext) -> None:
     text = """Hello there 👋\nThis bot is made by @Kishnan_Navadia and @MrGrey126"""
