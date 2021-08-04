@@ -2,21 +2,21 @@
 
 # Steps
 
-1. Clone Repo
-2. make .env file and write token like this
+- Clone Repo
+- make .env file and write token like this
 
 ```
 TOKEN=your_bot_token
 ```
 
-3. run python main.py
+- run python main.py
 
 # TODO
 
-1. forward telegram media and get download link
-2. download from direct link
-3. instagram public posts/reels/videos/carousel
-4. torrent download
-5. youtube video download
-6. facebook post
-7. song download
+- [x] Forwarded media support
+- [ ] Direct link support
+- [ ] Instagram public posts/reels/videos support
+- [ ] Torrent support
+- [ ] Youtube video support
+- [ ] Facebook post support
+- [ ] Spotify support

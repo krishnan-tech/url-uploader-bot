@@ -2,5 +2,4 @@ myenv/
 .env
 __pycache__/
 uploads/
-
 photos/
