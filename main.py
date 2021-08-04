@@ -18,6 +18,10 @@ TOKEN = os.getenv("TOKEN")
 
 logger = logging.getLogger(__name__)
 
+def clear_uploads(dir):
+    for file in os.listdir(dir):
+        os.remove(os.path.join(dir, file))
+
 def start(update: Update, context: CallbackContext) -> None:
     text = """Hello there 👋\nThis bot is made by @Kishnan_Navadia and @MrGrey126"""
     update.message.reply_text(text)
@@ -113,4 +117,5 @@ def main() -> None:
     updater.idle()
 
 if __name__ == '__main__':
+    clear_uploads("uploads")
     main()
