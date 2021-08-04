@@ -33,6 +33,13 @@ def main_function(update: Update, context: CallbackContext) -> None:
 		file_unique_id = (update.message.photo[-1]['file_unique_id'])
 		update.message.photo[-1].get_file().download(f"photos/{file_unique_id}.jpg")
 		print(f"Photo with unique id {file_unique_id} is downloaded")
+	
+	# TODO : check for document
+
+	# TODO : check for video
+
+	# TODO : Refactor code
+
 
 
 def main() -> None:
