@@ -1,8 +1,4 @@
 myenv/
 .env
 __pycache__/
-testing/
-photos/
-audios/
-videos/
-documents/
+uploads/
