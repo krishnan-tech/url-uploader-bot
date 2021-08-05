@@ -14,7 +14,7 @@ TOKEN=your_bot_token
 # TODO
 
 - [x] Forwarded media support
-- [ ] Direct link support
+- [x] Direct link support
 - [ ] Instagram public posts/reels/videos support
 - [ ] Torrent support
 - [ ] Youtube video support
