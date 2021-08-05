@@ -6,6 +6,7 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext
 import siaskynet as skynet
 import urllib.request
+import validators
 
 load_dotenv()
 client = skynet.SkynetClient()
@@ -73,16 +74,21 @@ def main_function(update: Update, context: CallbackContext) -> None:
     # ['text', 'new_chat_members', 'left_chat_member', 'new_chat_title', 'new_chat_photo', 'delete_chat_photo', 'group_chat_created', 'supergroup_chat_created', 'channel_chat_created', 'message_auto_delete_timer_changed', 'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message', 'poll', 'dice', 'passport_data', 'proximity_alert_triggered', 'voice_chat_scheduled', 'voice_chat_started', 'voice_chat_ended', 'voice_chat_participants_invited', 'audio', 'game', 'animation', 'document', 'photo', 'sticker', 'video', 'voice', 'video_note', 'contact', 'location', 'venue', 'invoice', 'successful_payment']
 
     # if there is url
-    if update.effective_message.text:
+    if update.message.text:
         try:
             # if only url 
-            uploadFromText(update, update.effective_message.text,  "Downloading from url... 😎", "Uploading... 📤", SETTING.TEXT_MSG)
+            if validators.url(update.message.text):
+                uploadFromText(update, update.effective_message.text,  "Downloading from url... 😎", "Uploading... 📤", SETTING.TEXT_MSG)
+            else:
+                raise Exception
         except Exception as e:
             # if there is no url or only text like thing
             print(e)
+            first_message = update.message.reply_text("Invalid URL 😒")
+
     
     # if input is photo
-    if len(update.message.photo) > 0:
+    elif len(update.message.photo) > 0:
         sendMessageAndUpload(update, update.message.photo[-1],  "Image Downloading... 😎", "Image Uploading... 📤", SETTING.PHOTO_MSG)
     
     # if input is video
