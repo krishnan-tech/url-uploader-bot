@@ -7,6 +7,8 @@
 
 ```
 TOKEN=your_bot_token
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 ```
 
 - run python main.py
@@ -15,8 +17,8 @@ TOKEN=your_bot_token
 
 - [x] Forwarded media support
 - [x] Direct link support
-- [ ] Instagram public posts/reels/videos support
-- [ ] Torrent support
+- [x] Spotify support
 - [ ] Youtube video support
+- [ ] Instagram public posts/reels/videos support
 - [ ] Facebook post support
-- [ ] Spotify support
+- [ ] Torrent support

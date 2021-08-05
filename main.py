@@ -7,6 +7,12 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContex
 import siaskynet as skynet
 import urllib.request
 import validators
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+import audioProvider
+from spotify import spotify_fetch
+import re
+
 
 load_dotenv()
 client = skynet.SkynetClient()
@@ -78,7 +84,16 @@ def main_function(update: Update, context: CallbackContext) -> None:
         try:
             # if only url 
             if validators.url(update.message.text):
-                uploadFromText(update, update.effective_message.text,  "Downloading from url... 😎", "Uploading... 📤", SETTING.TEXT_MSG)
+                # check for spotify
+                spot_url = re.findall(r"[\bhttps://open.\b]*spotify[\b.com\b]*[/:]*track[/:]*[A-Za-z0-9?=]+", update.message.text)
+
+                # if spotify url found
+                if spot_url != []:
+                    update.message.reply_text(spotify_fetch(spot_url[0]))
+
+                # if direct url
+                else:
+                    uploadFromText(update, update.effective_message.text,  "Downloading from url... 😎", "Uploading... 📤", SETTING.TEXT_MSG)
             else:
                 raise Exception
         except Exception as e:
