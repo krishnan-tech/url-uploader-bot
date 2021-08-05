@@ -5,6 +5,7 @@ from config import Config as SETTING
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext
 import siaskynet as skynet
+import urllib.request
 
 load_dotenv()
 client = skynet.SkynetClient()
@@ -53,10 +54,33 @@ def sendMessageAndUpload(update: Update, file_, download_text, uploading_text, s
 
     remove_uploaded_file(file_unique_id)
 
+def uploadFromText(update: Update, file_, download_text, uploading_text, starter_text) -> None:
+    create_upload_folder() # create upload folder if not exists
+    file_unique_id = (update.message.message_id) # get file ID
+    
+    first_message = update.message.reply_text(download_text)
+    with urllib.request.urlopen(file_) as f:
+        with open(f"uploads/{file_unique_id}", "wb") as f2:
+            f2.write(f.read())
+
+    first_message.edit_text(uploading_text)
+    first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{file_unique_id}')}") # upload image
+
+    remove_uploaded_file(file_unique_id)
+
 
 def main_function(update: Update, context: CallbackContext) -> None:
     # ['text', 'new_chat_members', 'left_chat_member', 'new_chat_title', 'new_chat_photo', 'delete_chat_photo', 'group_chat_created', 'supergroup_chat_created', 'channel_chat_created', 'message_auto_delete_timer_changed', 'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message', 'poll', 'dice', 'passport_data', 'proximity_alert_triggered', 'voice_chat_scheduled', 'voice_chat_started', 'voice_chat_ended', 'voice_chat_participants_invited', 'audio', 'game', 'animation', 'document', 'photo', 'sticker', 'video', 'voice', 'video_note', 'contact', 'location', 'venue', 'invoice', 'successful_payment']
 
+    # if there is url
+    if update.effective_message.text:
+        try:
+            # if only url 
+            uploadFromText(update, update.effective_message.text,  "Downloading from url... 😎", "Uploading... 📤", SETTING.TEXT_MSG)
+        except Exception as e:
+            # if there is no url or only text like thing
+            print(e)
+    
     # if input is photo
     if len(update.message.photo) > 0:
         sendMessageAndUpload(update, update.message.photo[-1],  "Image Downloading... 😎", "Image Uploading... 📤", SETTING.PHOTO_MSG)
@@ -64,7 +88,6 @@ def main_function(update: Update, context: CallbackContext) -> None:
     # if input is video
     elif update.message.video != None:
         sendMessageAndUpload(update, update.message.video, "Video Downloading... 😎", "Video Uploading... 📤", SETTING.VIDEO_MSG)
-
 
     # if input is document
     elif update.message.document != None:
@@ -74,9 +97,7 @@ def main_function(update: Update, context: CallbackContext) -> None:
     elif update.message.audio != None:
         sendMessageAndUpload(update, update.message.audio, "Audio Downloading... 😎", "Audio Uploading... 📤", SETTING.AUDIO_MSG)
 
-
     # TODO : Bot is limited 50mb for document and 20mb for others
-
 
 
 def main() -> None:
