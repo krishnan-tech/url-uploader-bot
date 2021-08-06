@@ -10,7 +10,7 @@ import validators
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import audioProvider
-from spotify import spotify_fetch
+from myspotify import spotify_fetch
 import re
 
 
