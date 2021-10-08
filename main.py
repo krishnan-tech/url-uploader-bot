@@ -12,7 +12,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import audioProvider
 from myspotify import spotify_fetch
 import re
-
+from youtube_downloader import extract_youtube_id, yt_download
 
 load_dotenv()
 client = skynet.SkynetClient()
@@ -40,7 +40,6 @@ def start(update: Update, context: CallbackContext) -> None:
 def upload_siasky(file_path):
     skylink = client.upload_file(file_path)
     return SETTING.SIASKY_CLIENT + skylink[6:]
-
 
 def create_upload_folder():
     if not os.path.exists("uploads"):
@@ -76,6 +75,18 @@ def uploadFromText(update: Update, file_, download_text, uploading_text, starter
     remove_uploaded_file(file_unique_id)
 
 
+def uploadYoutube(update: Update, youtube_url, download_text, uploading_text, starter_text) -> None:
+    create_upload_folder() # create upload folder if not exists
+    youtube_id = extract_youtube_id(youtube_url)
+    first_message = update.message.reply_text(download_text)
+    yt_download(youtube_url) # download youtube video
+
+    first_message.edit_text(uploading_text)
+    first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{youtube_id}.mp4')}") # upload image
+
+    remove_uploaded_file(f"{youtube_id}.mp4")
+
+
 def main_function(update: Update, context: CallbackContext) -> None:
     # ['text', 'new_chat_members', 'left_chat_member', 'new_chat_title', 'new_chat_photo', 'delete_chat_photo', 'group_chat_created', 'supergroup_chat_created', 'channel_chat_created', 'message_auto_delete_timer_changed', 'migrate_to_chat_id', 'migrate_from_chat_id', 'pinned_message', 'poll', 'dice', 'passport_data', 'proximity_alert_triggered', 'voice_chat_scheduled', 'voice_chat_started', 'voice_chat_ended', 'voice_chat_participants_invited', 'audio', 'game', 'animation', 'document', 'photo', 'sticker', 'video', 'voice', 'video_note', 'contact', 'location', 'venue', 'invoice', 'successful_payment']
 
@@ -86,10 +97,14 @@ def main_function(update: Update, context: CallbackContext) -> None:
             if validators.url(update.message.text):
                 # check for spotify
                 spot_url = re.findall(r"[\bhttps://open.\b]*spotify[\b.com\b]*[/:]*track[/:]*[A-Za-z0-9?=]+", update.message.text)
+                youtube_url = re.findall(r"[\bhttps://youtube.com/watch?v=\b]*[A-Za-z0-9?=]+", update.message.text)
 
                 # if spotify url found
                 if spot_url != []:
                     update.message.reply_text(spotify_fetch(spot_url[0]))
+                elif youtube_url != []:
+                    uploadYoutube(update, youtube_url[0], "Downloading Youtube Video... 😎", "Uploading... 📤", SETTING.VIDEO_MSG)
+
 
                 # if direct url
                 else:
