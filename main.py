@@ -86,6 +86,9 @@ def main_function(update: Update, context: CallbackContext) -> None:
             if validators.url(update.message.text):
                 # check for spotify
                 spot_url = re.findall(r"[\bhttps://open.\b]*spotify[\b.com\b]*[/:]*track[/:]*[A-Za-z0-9?=]+", update.message.text)
+                youtube_url = re.findall(r"[\bhttps://youtube.\b]*spotify[\b.com\b]*[/watch?v=]*track[/:]*[A-Za-z0-9?=]+", update.message.text)
+                print(spot_url)
+                print(youtube_url)
 
                 # if spotify url found
                 if spot_url != []:
