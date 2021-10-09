@@ -18,7 +18,7 @@ SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 - [x] Forwarded media support
 - [x] Direct link support
 - [x] Spotify support
-- [ ] Youtube video support
+- [x] Youtube video support
 - [ ] Instagram public posts/reels/videos support
 - [ ] Facebook post support
 - [ ] Torrent support
