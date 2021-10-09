@@ -75,16 +75,20 @@ def uploadFromText(update: Update, file_, download_text, uploading_text, starter
     remove_uploaded_file(file_unique_id)
 
 
-def uploadYoutube(update: Update, youtube_url, download_text, uploading_text, starter_text) -> None:
+def uploadYoutube(update: Update, youtube_url, download_text, uploading_text, starter_text, type) -> None:
     create_upload_folder() # create upload folder if not exists
     youtube_id = extract_youtube_id(youtube_url)
     first_message = update.message.reply_text(download_text)
-    yt_download(youtube_url) # download youtube video
+    yt_download(youtube_url, type) # download youtube video
 
     first_message.edit_text(uploading_text)
-    first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{youtube_id}.mp4')}") # upload image
+    if type == 0:
+        first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{youtube_id}.mp4')}") # upload image
+        remove_uploaded_file(f"{youtube_id}.mp4")
+    elif type == 1:
+        first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{youtube_id}.mp3')}") # upload image
+        remove_uploaded_file(f"{youtube_id}.mp3")
 
-    remove_uploaded_file(f"{youtube_id}.mp4")
 
 
 def main_function(update: Update, context: CallbackContext) -> None:
@@ -101,9 +105,10 @@ def main_function(update: Update, context: CallbackContext) -> None:
 
                 # if spotify url found
                 if spot_url != []:
-                    update.message.reply_text(spotify_fetch(spot_url[0]))
+                    # update.message.reply_text(spotify_fetch(spot_url[0]))
+                    uploadYoutube(update, spotify_fetch(spot_url[0]), "Downloading Spotify Audio... 😎", "Uploading... 📤", SETTING.AUDIO_MSG, 1)
                 elif youtube_url != []:
-                    uploadYoutube(update, youtube_url[0], "Downloading Youtube Video... 😎", "Uploading... 📤", SETTING.VIDEO_MSG)
+                    uploadYoutube(update, youtube_url[0], "Downloading Youtube Video... 😎", "Uploading... 📤", SETTING.VIDEO_MSG, 0)
 
 
                 # if direct url
