@@ -16,11 +16,18 @@ def extract_youtube_id(url):
     return None
 
 
-def yt_download(youtube_link):
-    ydl_opts = {
-        'format': "22/18/best",
-        'outtmpl': f"uploads/{extract_youtube_id(youtube_link)}.mp4"
-    }
+def yt_download(youtube_link,type):
+    if type == 0:
+        ydl_opts = {
+            'format': "22/18/best",
+            'outtmpl': f"uploads/{extract_youtube_id(youtube_link)}.mp4"
+        }
+    elif type == 1:
+        ydl_opts = {
+            'format': "140/bestaudio",
+            'outtmpl': f"uploads/{extract_youtube_id(youtube_link)}.mp3"
+        }
+
     with YoutubeDL(ydl_opts) as ydl:
         try:
             ydl.download([youtube_link])
