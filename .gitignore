@@ -6,3 +6,5 @@ photos/
 .vscode/
 .cache
 botenv/
+test.html
+test.py
