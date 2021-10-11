@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import wget
 import os
 from urllib.parse import urlparse
+import json
 
 def get_response(insta_url):
     payload={}
@@ -24,15 +25,79 @@ def get_response(insta_url):
     }
 
     response = requests.request("GET", insta_url, headers=headers, data=payload)
-    bs_response = BeautifulSoup(response.content, features="html.parser")
     if response.status_code == 200:
-        meta_tag = bs_response.find("meta", {"property" : "og:image"})
-        filename = wget.download(meta_tag["content"], out="./uploads/")
-        filename = os.path.basename(filename)
-        return filename
+        return response
     else:
         return None
 
+
+def insta_type_checker(json_response):
+    with open("test.json", "w") as file:
+        file.write(json.dumps(json_response))
+    if "product_type" in json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"] and "is_video" in json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]:
+        if json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["is_video"]:
+            return json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["product_type"]
+        else:
+            return None
+
+    elif "is_video" in json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]:
+        if json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["is_video"] == False:
+            return "post"
+        else:
+            return None
+    else:
+        return None
+
+def insta_json_conveter(response):
+    try:
+        soup = BeautifulSoup(response.text, features="html.parser")
+        with open("test.html", "w") as file:
+            file.write(response.text)
+        script_data = soup.find_all("script")[4]
+        try:
+            json_data = json.loads(script_data.contents[0][21:-1])
+        except:
+            json_data = json.loads(script_data.contents[0][21:-1])
+        return json_data
+    except:
+        return None
+
+def insta_wget(url):
+    filename = wget.download(url, out="./uploads/")
+    filename = os.path.basename(filename)
+    return filename
+
+def insta_post(response):
+    try:
+        soup = BeautifulSoup(response.content, features="html.parser")
+        meta_tag = soup.find("meta", {"property" : "og:image"})
+        return insta_wget(meta_tag["content"])
+    except:
+        return None
+
+
+def insta_reel(json_data):
+    try:
+        reel_src = json_data["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["video_url"]
+        return insta_wget(reel_src)
+    except:
+        return None
+
+
+def insta_video(json_data):
+    try:
+        video_src = json_data["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["video_url"]
+        return insta_wget(video_src)
+    except:
+        return None
+
+
+def insta_igtv(json_data):
+    try:
+        igtv_src = json_data["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["video_url"]
+        return insta_wget(igtv_src)
+    except:
+        return None
 
 def extract_insta_id(link):
     query = urlparse(link)

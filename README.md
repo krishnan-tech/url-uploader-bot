@@ -21,7 +21,7 @@ SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 - [x] Youtube video support
 - [ ] Instagram
     - [x] Post
-    - [ ] Reel
+    - [x] Reel
     - [ ] Video
     - [ ] IGTV
 - [ ] Facebook post support
