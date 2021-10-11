@@ -19,6 +19,10 @@ SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 - [x] Direct link support
 - [x] Spotify support
 - [x] Youtube video support
-- [ ] Instagram public posts/reels/videos support
+- [ ] Instagram
+    - [x] Post
+    - [ ] Reel
+    - [ ] Video
+    - [ ] IGTV
 - [ ] Facebook post support
 - [ ] Torrent support

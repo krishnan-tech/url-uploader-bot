@@ -24,15 +24,15 @@ def get_response(insta_url):
     }
 
     response = requests.request("GET", insta_url, headers=headers, data=payload)
-    response = BeautifulSoup(response.content, features="html.parser")
-    meta_tag = response.find("meta", {"property" : "og:image"})
-    filename = wget.download(meta_tag["content"], out="./uploads/")
-    filename = os.path.basename(filename)
-
+    bs_response = BeautifulSoup(response.content, features="html.parser")
     if response.status_code == 200:
+        meta_tag = bs_response.find("meta", {"property" : "og:image"})
+        filename = wget.download(meta_tag["content"], out="./uploads/")
+        filename = os.path.basename(filename)
         return filename
     else:
         return None
+
 
 def extract_insta_id(link):
     query = urlparse(link)

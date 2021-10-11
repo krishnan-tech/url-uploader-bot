@@ -114,20 +114,18 @@ def main_function(update: Update, context: CallbackContext) -> None:
             if validators.url(user_url):
                 # check for spotify
                 spot_url = re.findall(r"[\bhttps://open.\b]*spotify[\b.com\b]*[/:]*track[/:]*[A-Za-z0-9?=]+", user_url)
-                youtube_url = re.findall(r"[\bhttps://youtube.com/watch?v=\b]*[A-Za-z0-9?=]+", user_url)
-                insta_url = re.findall(r"[\bhttps://(?:www\.)instagram/.com\b]*[(?:p/|reel/)]*[A-Za-z0-9?=]+", user_url)
-                
+                youtube_url = re.findall(r"[\bhttps://(?:www\.)]*youtube[/.com/watch?v=\b]*[A-Za-z0-9?=]+", user_url)
+                insta_url = re.findall(r"[\bhttps://(?:www\.)]*instagram[/.com\b]*[(?:p/|reel/)]*[A-Za-z0-9?=]+", user_url)
+
                 # if spotify url found
                 if spot_url != []:
                     # update.message.reply_text(spotify_fetch(spot_url[0]))
                     uploadYoutube(update, spotify_fetch(spot_url[0]), "Downloading Spotify Audio... 😎", "Uploading... 📤", SETTING.AUDIO_MSG, 1)
                 elif youtube_url != []:
                     uploadYoutube(update, youtube_url[0], "Downloading Youtube Video... 😎", "Uploading... 📤", SETTING.VIDEO_MSG, 0)
-                # if instagram url
                 elif insta_url != []:
-                    filename = insta_download.get_response(user_url)
-                    if filename != None:
-                        uploadInstagram(update, insta_url[0], "Downloading Instagram Post... 😎", "Uploading... 📤", SETTING.DOCUMENT_MSG, 0)
+                    uploadInstagram(update, insta_url[0], "Downloading Instagram Post... 😎", "Uploading... 📤", SETTING.DOCUMENT_MSG, 0)
+                # if instagram url
 
 
                 # if direct url
