@@ -13,6 +13,7 @@ import audioProvider
 from myspotify import spotify_fetch
 import re
 from youtube_downloader import extract_youtube_id, yt_download
+import insta_download
 
 load_dotenv()
 client = skynet.SkynetClient()
@@ -89,6 +90,17 @@ def uploadYoutube(update: Update, youtube_url, download_text, uploading_text, st
         first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{youtube_id}.mp3')}") # upload image
         remove_uploaded_file(f"{youtube_id}.mp3")
 
+def uploadInstagram(update: Update, instagram_url, download_text, uploading_text, starter_text, type) -> None:
+    create_upload_folder() # create upload folder if not exists
+    instagram_id = insta_download.extract_insta_id(instagram_url)
+    first_message = update.message.reply_text(download_text)
+    filename = insta_download.get_response(instagram_url) # download fom instagram
+
+    if filename != None:
+        first_message.edit_text(uploading_text)
+        first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{filename}')}") # upload
+        remove_uploaded_file(filename)
+
 
 
 def main_function(update: Update, context: CallbackContext) -> None:
@@ -98,10 +110,12 @@ def main_function(update: Update, context: CallbackContext) -> None:
     if update.effective_message.text:
         try:
             # if only url 
-            if validators.url(update.message.text):
+            user_url = update.message.text
+            if validators.url(user_url):
                 # check for spotify
-                spot_url = re.findall(r"[\bhttps://open.\b]*spotify[\b.com\b]*[/:]*track[/:]*[A-Za-z0-9?=]+", update.message.text)
-                youtube_url = re.findall(r"[\bhttps://youtube.com/watch?v=\b]*[A-Za-z0-9?=]+", update.message.text)
+                spot_url = re.findall(r"[\bhttps://open.\b]*spotify[\b.com\b]*[/:]*track[/:]*[A-Za-z0-9?=]+", user_url)
+                youtube_url = re.findall(r"[\bhttps://(?:www\.)]*youtube[/.com/watch?v=\b]*[A-Za-z0-9?=]+", user_url)
+                insta_url = re.findall(r"[\bhttps://(?:www\.)]*instagram[/.com\b]*[(?:p/|reel/)]*[A-Za-z0-9?=]+", user_url)
 
                 # if spotify url found
                 if spot_url != []:
@@ -109,6 +123,9 @@ def main_function(update: Update, context: CallbackContext) -> None:
                     uploadYoutube(update, spotify_fetch(spot_url[0]), "Downloading Spotify Audio... 😎", "Uploading... 📤", SETTING.AUDIO_MSG, 1)
                 elif youtube_url != []:
                     uploadYoutube(update, youtube_url[0], "Downloading Youtube Video... 😎", "Uploading... 📤", SETTING.VIDEO_MSG, 0)
+                elif insta_url != []:
+                    uploadInstagram(update, insta_url[0], "Downloading Instagram Post... 😎", "Uploading... 📤", SETTING.DOCUMENT_MSG, 0)
+                # if instagram url
 
 
                 # if direct url
