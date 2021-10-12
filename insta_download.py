@@ -32,7 +32,7 @@ def get_response(insta_url):
 
 
 def insta_type_checker(json_response):
-    with open("test.json", "w") as file:
+    with open("test.json", "w", encoding="utf-8") as file:
         file.write(json.dumps(json_response))
     if "product_type" in json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"] and "is_video" in json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]:
         if json_response["entry_data"]["PostPage"][0]["graphql"]["shortcode_media"]["is_video"]:
@@ -51,7 +51,7 @@ def insta_type_checker(json_response):
 def insta_json_conveter(response):
     try:
         soup = BeautifulSoup(response.text, features="html.parser")
-        with open("test.html", "w") as file:
+        with open("test.html", "w", encoding="utf-8") as file:
             file.write(response.text)
         script_data = soup.find_all("script")[4]
         try:

@@ -101,7 +101,6 @@ def uploadInstagram(update: Update, instagram_url, download_text, uploading_text
         json_data = insta_download.insta_json_conveter(response)
         if json_data != None:
             insta_media_type = insta_download.insta_type_checker(json_data)
-            print(insta_media_type)
             if insta_media_type != None:
                 if insta_media_type == "post":
                     filename = insta_download.insta_post(response)
