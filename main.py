@@ -94,12 +94,35 @@ def uploadInstagram(update: Update, instagram_url, download_text, uploading_text
     create_upload_folder() # create upload folder if not exists
     instagram_id = insta_download.extract_insta_id(instagram_url)
     first_message = update.message.reply_text(download_text)
-    filename = insta_download.get_response(instagram_url) # download fom instagram
+    response = insta_download.get_response(instagram_url)
+    filename = None
+
+    if response != None:
+        json_data = insta_download.insta_json_conveter(response)
+        if json_data != None:
+            insta_media_type = insta_download.insta_type_checker(json_data)
+            if insta_media_type != None:
+                if insta_media_type == "post":
+                    filename = insta_download.insta_post(response)
+                elif insta_media_type == "clips":
+                    filename = insta_download.insta_reel(json_data)
+                elif insta_media_type == "feed":
+                    filename = insta_download.insta_video(json_data)
+                elif insta_media_type == "igtv":
+                    filename = insta_download.insta_igtv(json_data)
+                else:
+                    return None
+            else:
+                return None
+
+
 
     if filename != None:
         first_message.edit_text(uploading_text)
         first_message.edit_text(f"{starter_text}\n{upload_siasky(f'uploads/{filename}')}") # upload
         remove_uploaded_file(filename)
+    else:
+        bot.sendMessage(update.effective_user.id, "Download Error :)\nPlease try again after some time")
 
 
 
