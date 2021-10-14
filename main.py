@@ -138,7 +138,7 @@ def main_function(update: Update, context: CallbackContext) -> None:
                 # check for spotify
                 spot_url = re.findall(r"[\bhttps://open.\b]*spotify[\b.com\b]*[/:]*track[/:]*[A-Za-z0-9?=]+", user_url)
                 youtube_url = re.findall(r"[\bhttps://(?:www\.)]*youtube[/.com/watch?v=\b]*[A-Za-z0-9?=]+", user_url)
-                insta_url = re.findall(r"[\bhttps://(?:www\.)]*instagram[/.com\b]*[(?:p/|reel/)]*[A-Za-z0-9?=]+", user_url)
+                insta_url = re.findall(r"[\bhttps://(?:www\.)]*instagram[/.com\b]*[(?:p/|reel/)]*[A-Za-z0-9-_?=]+", user_url)
 
                 # if spotify url found
                 if spot_url != []:
